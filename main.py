@@ -5,15 +5,14 @@ from typing import List
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import os
 
 app = FastAPI(title="LGOIS API de Cobrança")
 
-# Pega as credenciais de forma segura do painel do Render (Environment Variables)
-SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
-SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
-EMAIL_REMETENTE = os.getenv("ramonvieira2711@gmail.com")
-EMAIL_SENHA = os.getenv("fxuhayndhukagcsq")
+# Configurações fixas do seu e-mail de envio
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
+EMAIL_REMETENTE = "ramonvieira2711@gmail.com"
+EMAIL_SENHA = "fxuhayndhukagcsq"
 
 class CobrancaRequest(BaseModel):
     cliente_nome: str
@@ -22,7 +21,6 @@ class CobrancaRequest(BaseModel):
 
 @app.get("/", response_class=HTMLResponse)
 def home():
-    # Tela HTML limpa e profissional integrada diretamente na API
     return """
     <!DOCTYPE html>
     <html lang="pt-BR">
@@ -104,8 +102,6 @@ def home():
 
 @app.post("/enviar-cobranca/")
 def enviar_cobranca(dados: CobrancaRequest):
-    if not EMAIL_REMETENTE or not EMAIL_SENHA:
-        raise HTTPException(status_code=500, detail="Credenciais de e-mail não configuradas no servidor.")
     try:
         assunto = f"PENDÊNCIA DE DOCUMENTOS - {dados.cliente_nome}"
         corpo = f"""Prezados,
@@ -134,3 +130,4 @@ Equipe LGOIS
         return {"status": "sucesso", "mensagem": "E-mails enviados com sucesso!"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
