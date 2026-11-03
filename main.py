@@ -76,7 +76,8 @@ def home():
                 divMensagem.innerText = 'A enviar e-mail...';
 
                 try {
-                    const resposta = await fetch('/enviar-cobranca/', {
+                    // Aponta diretamente para o link completo da API na nuvem
+                    const resposta = await fetch('https://api-email-1js6.onrender.com/enviar-cobranca/', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ cliente_nome: nome, cliente_emails: listaEmails, documentos_faltantes: documentos })
